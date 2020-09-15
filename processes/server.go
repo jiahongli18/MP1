@@ -5,30 +5,26 @@ import (
 "fmt"
 "net"
 "os"
-"strconv"
 "strings"
 "time"
 )
 
-//Delivers the message received from the source process
+//Delivers the message received from the source process and prints out message, source, and time
 func unicast_receive(source string, message string) {
-	fmt.Printf("Received %q from process %s, system time is %s\n", message, source, time.Now())
+	fmt.Printf("Received %q from process %s, system time is %s\n", message, source, time.Now().Format("Jan _2 15:04:05.000"))
 }
 
-var count = 0
+// var count = 0
 
 func handleConnection(c net.Conn) {
   for {
+    //read message and source from request
     netData, err := bufio.NewReader(c).ReadString('\n')
     if err != nil {
       fmt.Println(err)
       return
     }
     str := strings.TrimSpace(string(netData))
-    
-    if str == "STOP" {
-        break
-    }
 
     //parse str that source sent to split up source and message
     source := strings.Split(str, " ")[0]
@@ -36,8 +32,6 @@ func handleConnection(c net.Conn) {
     // message = strings.Replace(destination, " ", "", -1)
 
     unicast_receive(source, message)
-    counter := strconv.Itoa(count) + "\n"
-    c.Write([]byte(string(counter)))
     }
     c.Close()
 }
@@ -49,6 +43,7 @@ func main() {
     return
   }
 
+  //get port number from user input and listen in on that port for requests
   PORT := ":" + arguments[1]
   l, err := net.Listen("tcp4", PORT)
   if err != nil {
@@ -63,7 +58,8 @@ func main() {
       fmt.Println(err)
       return
     }
+
+    //goroutine for handling requests made to server
     go handleConnection(c)
-      count++
     }
 }
