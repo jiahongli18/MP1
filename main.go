@@ -4,18 +4,19 @@ import (
 	"bufio"
 	"fmt"
 	"log"
-	"os"
-	"strings"
-	"strconv"
-	"net"
-	"time"
 	"math/rand"
+	"net"
+	"os"
+	"strconv"
+	"strings"
+	"time"
+	"io/ioutil"
 )
 
-func delay(min int, max int){
-	num := rand.Intn(max-min) +min
+func delay(min int, max int) {
+	num := rand.Intn(max-min) + min
 	time.Sleep(time.Duration(num) * time.Millisecond)
-	return 
+	return
 }
 
 //unicast_receive starts like a TCP server
@@ -72,19 +73,19 @@ func Application(Sender string, Dest string, message string) {
 	//fmt.Println("SendIP", SendIP)
 	//fmt.Println("DestPort", DestPort)
 	//delay(min, max)
-	
-	unicast_receive(":" + DestPort, message)
-	IpPort := SendIP+ ":" + DestPort
+
+	unicast_receive(":"+DestPort, message)
+	IpPort := SendIP + ":" + DestPort
 	unicast_send(IpPort, message)
 
 	//unicast_receive(":8080", message)
 	//unicast_send("golang.org:80", message)
-	
+
 	go delay(min_delay, max_delay)
 }
 
-func main(){
-	var Sender string
+func main() {
+	/*var Sender string
 	var Dest string
 
 	//channel := make(chan string)
@@ -111,8 +112,22 @@ func main(){
 	fmt.Print(message)
 
 	Application(Sender, Dest, message)
+	*/
 	return
 }
+
+func Read(){
+	content, err := ioutil.ReadFile("config.txt")
+	if err != nil {
+    //Do something
+	}	
+	lines := strings.Split(string(content), "\n")
+	fmt.Printf("File contents: %s", content[0])
+	fmt.Print(lines)
+	//var min_delay int
+	//var max_delay int
+}
+
 
 //for now for destination arg, put "127:0:0:1:5000"
 
@@ -122,10 +137,10 @@ func main(){
 
 	// listen on all interfaces
 	ln, _ := net.Listen("tcp", ":" + destination.split(":")[1])
-  
+
 	// accept connection on port
 	conn, _ := ln.Accept()
-  
+
 	// run loop forever (or until ctrl-c)
 	for {
 	  // will listen for message to process ending in newline (\n)
@@ -141,7 +156,7 @@ func main(){
 */
 
 //unicast_send acts like a TCP client
-func unicast_send(destination string, message string){
+func unicast_send(destination string, message string) {
 
 	CONNECT := destination
 	c, err := net.Dial("tcp", CONNECT)
@@ -152,6 +167,5 @@ func unicast_send(destination string, message string){
 	for {
 		fmt.Fprintf(c, message)
 		return
-		}
 	}
-
+}

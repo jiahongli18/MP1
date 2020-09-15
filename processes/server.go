@@ -1,34 +1,69 @@
 package main
 
-import "net"
-import "fmt"
-import "bufio"
-import "strings"
-import "os"
+import (
+"bufio"
+"fmt"
+"net"
+"os"
+"strconv"
+"strings"
+"time"
+)
+
+//Delivers the message received from the source process
+func unicast_receive(source string, message string) {
+	fmt.Printf("Received %q from process %s, system time is %s\n", message, source, time.Now())
+}
+
+var count = 0
+
+func handleConnection(c net.Conn) {
+  for {
+    netData, err := bufio.NewReader(c).ReadString('\n')
+    if err != nil {
+      fmt.Println(err)
+      return
+    }
+    str := strings.TrimSpace(string(netData))
+    
+    if str == "STOP" {
+        break
+    }
+
+    //parse str that source sent to split up source and message
+    source := strings.Split(str, " ")[0]
+    message := strings.Split(str, " ")[1]
+    // message = strings.Replace(destination, " ", "", -1)
+
+    unicast_receive(source, message)
+    counter := strconv.Itoa(count) + "\n"
+    c.Write([]byte(string(counter)))
+    }
+    c.Close()
+}
 
 func main() {
-
   arguments := os.Args
-  port := arguments[1]
-  
-  // listen on all interfaces
-  fmt.Println(port)
-
-  ln, _ := net.Listen("tcp", ":" + port)
-  fmt.Println("Listening on port" + port)
-
-  // accept connection on port
-  conn, _ := ln.Accept()
-
-  // run loop forever (or until ctrl-c)
-  for {
-    // will listen for message to process ending in newline (\n)
-    message, _ := bufio.NewReader(conn).ReadString('\n')
-    // output message received
-    fmt.Print("Message Received:", string(message))
-    // sample process for string received
-    newmessage := strings.ToUpper(message)
-    // send new string back to client
-    conn.Write([]byte(newmessage + "\n"))
+  if len(arguments) == 1 {
+    fmt.Println("Please provide a port number!")
+    return
   }
+
+  PORT := ":" + arguments[1]
+  l, err := net.Listen("tcp4", PORT)
+  if err != nil {
+      fmt.Println(err)
+      return
+  }
+  defer l.Close()
+
+  for {
+    c, err := l.Accept()
+    if err != nil {
+      fmt.Println(err)
+      return
+    }
+    go handleConnection(c)
+      count++
+    }
 }
