@@ -33,11 +33,15 @@ The server should print something like:
 ```Received "hello" from process 2, system time is Sep 14 20:48:59.734```
 
 ## Structure and Design
-
+*There are two layers in our design.
+*The application layer interacts with the user. It gets the user command and makes use of unicast_receive function to print the message received, the source, and the current time (indicating the possible delays in the message delivery via TCP connection)
+*The network layer is theoretically built upon TCP connections between the processes, and uses unicast_send function to show the source and destination process in the message delivery. 
+*We use waitgroup to simulate the delay in realtime.
 
 ## Resources
 * Darius Russell Kish
 * [TCP Server](https://opensource.com/article/18/5/building-concurrent-tcp-server-go)
+* [WaitGroups](https://www.golangprograms.com/how-to-use-waitgroup-to-delay-execution-of-the-main-function-until-after-all-goroutines-are-complete.html)
 ## Authors
 * Jiahong Li
 * Zheng Zhou

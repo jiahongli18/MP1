@@ -25,45 +25,14 @@ func Read(){
 	lines := strings.Split(string(content), "\n")
 	fmt.Printf("File contents: %s", content[0])
 	fmt.Print(lines)
-	//var min_delay int
-	//var max_delay int
+	
 }
 
 func dial() {
-	// line := 0
-	// f, err := os.Open("config.txt")
-	// arguments := os.Args
+	ip := "127:0:0:1"
+	port := "6001"
+	TCPdial(ip,port)
 
-    // if err != nil {
-    //     log.Fatal(err)
-    // }
-
-    // defer f.Close()
-
-	// scanner := bufio.NewScanner(f)
-
-	//First for loop: for dialing and establishing connection with every other ip:host
-    // for scanner.Scan() {
-		// if(line != 0) {
-		// 	process := strings.Split(scanner.Text(), " ")[0]
-		// 	ip := strings.Split(scanner.Text(), " ")[1]
-		// 	port := strings.Split(scanner.Text(), " ")[2]
-
-			//check and parse all ip/host that aren't the process itself
-			// if(process != arguments[1]) {
-				// fmt.Println(process, ip, port)
-				ip := "127:0:0:1"
-				port := "6001"
-				TCPdial(ip,port)
-			// }
-		// }
-		
-	// 	line = line + 1
-	// }
-	
-    // if err := scanner.Err(); err != nil {
-    //     log.Fatal(err)
-    // }
 }
 
 func acceptRequests() {
@@ -168,14 +137,6 @@ func handleConnection(c net.Conn) {
 	c.Close()
 }
 
-
-// func unicast_send(conn net.Conn, message string) {
-//   fmt.Fprintf(conn, text + "\n")
-//     // listen for reply
-//     message, _ := bufio.NewReader(conn).ReadString('\n')
-// 	fmt.Print("Message from server: "+message)
-// 	t := time.Now()
-// }
 
 //Delivers the message received from the source process
 /*func unicast_receive(source string, message string) {
