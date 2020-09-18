@@ -6,6 +6,7 @@ import (
     "os"
     "sync"
     "./processes"
+    "./utils"
 )
 
 
@@ -34,10 +35,10 @@ func initialize(processNum string) {
                 break
             }
 
-            fmt.Println(status)
+            fmt.Println("Awaiting connections...Retrying in 2 secs.")
 
             groupTest := new(sync.WaitGroup)
-            go processes.Delay(2000,2500,groupTest)
+            go Utils.Delay(2000,2500,groupTest)
  
             groupTest.Add(1)
             groupTest.Wait()

@@ -1,48 +1,27 @@
 package Utils
 
 import (
-    // "fmt"
-    "os"
+  "os"
 	"bufio"
 	"strconv"
-    "strings"
+  "strings"
 	"log"
-	// "encoding/gob"
-	// "net"
-	// "../processes"
+  "sync"
+  "time"
+  "math/rand"
 )
 
 func ReadConfig(destination string)(string, string, int, int, []string){
-    ip, port := fetchHostPort(destination)
-    min_delay, max_delay := fetchDelay()
+    ip, port := FetchHostPort(destination)
+    min_delay, max_delay := FetchDelay()
 
 	ports := []string{"6001","6002","6003"}
 
 	return ip, port, min_delay, max_delay, ports
 }
 
-// func parseConfig(destination string) (string, string, int, int, []string){
-	
-
-    // // create TCP channel
-    // CONNECT := destination
-	// c, err := net.Dial("tcp", CONNECT)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
-	
-    
-	// //create a gob encoder and code the data struct
-	// encoder := gob.NewEncoder(c)
-	// data := processes.Data{ip, port, min_delay, max_delay, ports}
-    // // fmt.Println(data)
-	// _ = encoder.Encode(data)
-	
-// }
-
 //parses config.txt and returns ip and host
-func fetchHostPort(destination string) (string, string){
+func FetchHostPort(destination string) (string, string){
 	line := 0
 	f, err := os.Open("./config.txt")
 
@@ -79,7 +58,7 @@ func fetchHostPort(destination string) (string, string){
 }
 
 //parses the min and max delays from the config file
-func fetchDelay()(int, int){
+func FetchDelay()(int, int){
   f, err := os.Open("./config.txt")
   if err != nil {
     log.Fatal(err)
@@ -92,4 +71,13 @@ func fetchDelay()(int, int){
   max_delay, _ := strconv.Atoi(delays[1])
   f.Close()
   return min_delay, max_delay
+}
+
+//Simulate network delay by adding an extra layer before sending the message via the TCP channel
+func Delay(min int, max int, groupTest *sync.WaitGroup){
+	num := rand.Intn(max-min) +min
+	time.Sleep(time.Duration(num) * time.Millisecond)
+
+  //decrement value of waitgroup and relay the flow of execution back to main  
+  groupTest.Done()    
 }

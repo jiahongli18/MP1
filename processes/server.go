@@ -10,7 +10,7 @@ import (
 
 //Delivers the message received from the source process and prints out message, source, and time
 func unicast_receive(source string, message string) {
-	fmt.Printf("Received %q from process %s, system time is %s\n", message, source, time.Now().Format("Jan _2 15:04:05.000"))
+	fmt.Printf("\nReceived %q from process %s, system time is %s\nPlease enter a command: ", message, source, time.Now().Format("Jan _2 15:04:05.000"))
 }
 
 // var count = 0
