@@ -6,14 +6,14 @@ import (
   "bufio"
   "os"
   "strings"
-  "log"
+  // "log"
   "time"
   "math/rand"
-  "strconv"
+  // "strconv"
   "sync"
 )
 
-func Unicast() {
+func Unicast(ip string, port string, min_delay int, max_delay int, ports []string) {
   
   for { 
     // read in input from stdin
@@ -38,51 +38,14 @@ func Unicast() {
     
     //find the associating host/port according to the user's desired destination #
     // ip, port := fetchHostPort(destination)
-    ip := "127.0.0.1"
-    port:= "6002"
+    //ip := "127.0.0.1"
+    //port:= "6002"
     //min_delay, max_delay := fetchdelay()
-    min_delay, max_delay := 2000,3000
+    //min_delay, max_delay := 2000,3000
 
     unicast_send(destination, ip + ":" + port, message, min_delay, max_delay)
   }
 }
-
-//parses config.txt and returns ip and host
-// func fetchHostPort(destination string) (string, string){
-// 	line := 0
-// 	f, err := os.Open("../config.txt")
-// 	// arguments := os.Args
-
-//     if err != nil {
-//         log.Fatal(err)
-//     }
-
-//     defer f.Close()
-
-// 	scanner := bufio.NewScanner(f)
-  
-//   for scanner.Scan() {
-// 		if(line != 0) {
-// 			process := strings.Split(scanner.Text(), " ")[0]
-// 			ip := strings.Split(scanner.Text(), " ")[1]
-// 			port := strings.Split(scanner.Text(), " ")[2]
-
-// 			if(process == destination) {
-//         // fmt.Println(ip,port)
-// 				return ip,port
-
-// 			}
-// 		}
-		
-// 		line = line + 1
-// 	}
-	
-//     if err := scanner.Err(); err != nil {
-//         log.Fatal(err)
-//     }
-
-//   return "nil","nil"
-// }
 
 //Simulate network delay by adding an extra layer before sending the message via the TCP channel
 func Delay(min int, max int, groupTest *sync.WaitGroup){
@@ -91,22 +54,6 @@ func Delay(min int, max int, groupTest *sync.WaitGroup){
 
   //decrement value of waitgroup and relay the flow of execution back to main  
   groupTest.Done()    
-}
-
-//parses the min and max delays from the config file
-func fetchdelay()(int, int){
-  f, err := os.Open("../config.txt")
-  if err != nil {
-    log.Fatal(err)
-  }
-
-  scanner := bufio.NewScanner(f)
-  scanner.Scan()
-  delays := strings.Fields(scanner.Text())
-  min_delay, _ := strconv.Atoi(delays[0])
-  max_delay, _ := strconv.Atoi(delays[1])
-  f.Close()
-  return min_delay, max_delay
 }
 
 //Sends message to the destination process

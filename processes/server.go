@@ -1,10 +1,9 @@
-package main
+package processes
 
 import (
 "bufio"
 "fmt"
 "net"
-"os"
 "strings"
 "time"
 )
@@ -36,15 +35,10 @@ func handleConnection(c net.Conn) {
     c.Close()
 }
 
-func main() {
-  arguments := os.Args
-  if len(arguments) == 1 {
-    fmt.Println("Please provide a port number!")
-    return
-  }
+func StartServer(port string) {
 
   //get port number from user input and listen in on that port for requests
-  PORT := ":" + arguments[1]
+  PORT := ":" + port
   l, err := net.Listen("tcp4", PORT)
   if err != nil {
       fmt.Println(err)
