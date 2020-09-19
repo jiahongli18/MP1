@@ -11,6 +11,7 @@ import (
   "../utils"
 )
 
+//Reads user command and sends the message with regards to destination and delay bounds
 func Unicast() {
   
   for { 
@@ -36,10 +37,7 @@ func Unicast() {
     
     //find the associating host/port according to the user's desired destination #
     ip, port := Utils.FetchHostPort(destination)
-    // ip := "127.0.0.1"
-    // port:= "6002"
     min_delay, max_delay := Utils.FetchDelay()
-    // min_delay, max_delay := 2000,3000
 
     unicast_send(destination, ip + ":" + port, message, min_delay, max_delay)
   }

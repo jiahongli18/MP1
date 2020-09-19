@@ -9,22 +9,41 @@ import (
   "sync"
   "time"
   "math/rand"
+  //"fmt"
 )
 
-func ReadConfig(destination string)(string, string, int, int, []string){
-    ip, port := FetchHostPort(destination)
-    min_delay, max_delay := FetchDelay()
+//Fetches all the ports
+func FetchPorts()([]string){
+  line := 0
+  f, err := os.Open("./config.txt")
+  var ports []string
+  if err != nil {
+      log.Fatal(err)
+  }
 
-	ports := []string{"6001","6002","6003"}
-
-	return ip, port, min_delay, max_delay, ports
+  defer f.Close()
+	scanner := bufio.NewScanner(f)
+  
+  for scanner.Scan() {
+		if(line != 0) {
+			port := strings.Split(scanner.Text(), " ")[2]
+			ports = append(ports, port)
+		}
+    line = line + 1
+	}
+	
+  if err := scanner.Err(); err != nil {
+      log.Fatal(err)
+  }
+  return ports
 }
+  
 
 //parses config.txt and returns ip and host
 func FetchHostPort(destination string) (string, string){
 	line := 0
 	f, err := os.Open("./config.txt")
-
+  //ports := []string
     if err != nil {
 		
         log.Fatal(err)
@@ -41,7 +60,7 @@ func FetchHostPort(destination string) (string, string){
 			port := strings.Split(scanner.Text(), " ")[2]
 
 			if(process == destination) {
-                // fmt.Println(ip,port)
+        //fmt.Println(ip, port)
 				return ip,port
 
 			}
@@ -54,7 +73,7 @@ func FetchHostPort(destination string) (string, string){
         log.Fatal(err)
     }
 
-  return "nil","nil"
+  return "nn","nn"
 }
 
 //parses the min and max delays from the config file
@@ -74,10 +93,10 @@ func FetchDelay()(int, int){
 }
 
 //Simulate network delay by adding an extra layer before sending the message via the TCP channel
-func Delay(min int, max int, groupTest *sync.WaitGroup){
+func Delay(min int, max int, wg *sync.WaitGroup){
 	num := rand.Intn(max-min) +min
 	time.Sleep(time.Duration(num) * time.Millisecond)
 
   //decrement value of waitgroup and relay the flow of execution back to main  
-  groupTest.Done()    
+  wg.Done()    
 }
