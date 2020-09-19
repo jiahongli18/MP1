@@ -43,7 +43,6 @@ func FetchPorts()([]string){
 func FetchHostPort(destination string) (string, string){
 	line := 0
 	f, err := os.Open("./config.txt")
-  //ports := []string
     if err != nil {
 		
         log.Fatal(err)

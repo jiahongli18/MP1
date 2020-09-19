@@ -1,11 +1,12 @@
 package processes
 
 import (
-"bufio"
-"fmt"
-"net"
-"strings"
-"time"
+  "bufio"
+  "fmt"
+  "net"
+  "strings"
+  "time"
+  "../utils"
 )
 
 //Delivers the message received from the source process and prints out message, source, and time
@@ -35,7 +36,9 @@ func handleConnection(c net.Conn) {
     c.Close()
 }
 
-func StartServer(port string) {
+func StartServer(processNum string) {
+  _,port := Utils.FetchHostPort(processNum)
+
 
   //get port number from user input and listen in on that port for requests
   PORT := ":" + port

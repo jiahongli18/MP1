@@ -20,17 +20,15 @@ func main() {
 
 //The function initializes the dialers of the TCP connections and uses a delay in order to avoid excessive dialing
 func initialize(processNum string) {
-    //fmt.Println(processNum)
-    ip,host := Utils.FetchHostPort(processNum)
-    ip = "127.0.0.1"
-    fmt.Println(ip,host)
+    processIP,host := Utils.FetchHostPort(processNum)
     ports := Utils.FetchPorts()
 
     //loop through every port in the config.txt and create a TCP connection between current process' port and others
     for port := range ports {
         //keeps dialing until a successful connection was made
         for {
-            status := dial(host, ports[port], ip)
+            // status := dial(host, ports[port], processIP)
+            status := dial(host, ports[port], processIP)
             if(status == "success") {
                 break
             }
